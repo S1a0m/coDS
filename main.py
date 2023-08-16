@@ -37,7 +37,10 @@ print("""Ce présent programme est juste une petite idée née lors d'une fantai
 petit frère et l'auteur du code. Il s'agira à travers le programme de crypter du texte ou 
 de le décrypter en précisant le nom du fichier ou le chemin d'accès au fichier.
 
-Pour commencer entrez le nom ou le chemin d'acces au fichier texte. 
+Le fichier à crypter ou à décrypter ainsi que les fichiers sortants doivent tous être dans le
+répertoire courant d'où est lancé le programme. Merci.
+
+Pour commencer entrez le nom du fichier texte. 
 """)
 
 class Fichier_coDS:
@@ -53,19 +56,19 @@ class Fichier_coDS:
 
     def info_fichier(self):
         return {'Propriétaire du fichier' : {self.proprio},
-                'Enregistré le ' : {save},
-                'Chemin d\'accès au fichier' : {self.name_fichier},
+                'Enregistré le ' : {date},
+                'Nom du fichier' : {self.name_fichier},
                 'Type du fichier' : {self.type_fichier},
-                'Cle d\'accès' : {self._key}}
+                'Clé d\'accès' : {self._key}}
 
     def _crypt_key(self, key):
         cle = bytes(key)                                        # conversion de la chaine en byte
         cle_chiffree = hashlib.sha1(cle).hexdigest()
         return cle_chiffree
+    pass
 
 
-
-opt_choisie = input("[coDS] >> ")                                      # option choisie dans le menu
+fichier_choisie = input("[coDS] >> ")                                   #nom du fichier entrant
 flag = True                                                            # pour continuer dans la boucle
 
 while flag:
@@ -80,28 +83,32 @@ while flag:
 
         opt_choisie = input("[coDS] >> ")
 
-        if opt_choisie == 'a':
+        if opt_choisie == 'a' or opt_choisie == 'b':
             print("Entrez votre pseudo :")
             proprio = input("[coDS] >> ")
-            print("Le nouveau nom au fichier crypté :")
-            name_fichier = input(f"[{proprio}] >> ")
-            print("La cle de cryptage :")
 
-            key = input(f"[{proprio}] >> ")
-            while not re.fullmatch('\d{3}', key):
-                print("La clé doit être un nombre de trois chiffres!")
+            if opt_choisie == 'a':
+                print("Entrez la clé de cryptage :")
                 key = input(f"[{proprio}] >> ")
+                while not re.fullmatch('\d{3}', key):
+                    print("La clé doit être un nombre de trois chiffres!")
+                    key = input(f"[{proprio}] >> ")
 
-            file = Fichier_coDS(proprio, name_fichier, key, type_fichier="crypté")                                       # création de l'objet à crypter
-            file.crypter()
-            print(f"Fichier bien enregistré le {date} par {file.proprio}")
-            print(f"Type du fichier : {file.type_fichier}\n"
-                  f"Chemin d'acces : {file.name_fichier}")
+                file = Fichier_coDS(proprio, fichier_choisie, key, type_fichier="décrypté")                            # création de l'objet à crypter
+                fichier = file.crypter()
+                with open(f"{fichier_choisie}.json", 'w') as f:
+                    f.write('ATTENTION le fichier que vous lisez est strictement requis.'
+                            'Il vous aidera à décripter votre fichier si besoin y est.'
+                            'Il ne doit donc être en aucun cas supprimé!\n')
+                    json.dump(file.info_fichier(), f, indent=2)                                                       # creation du fichier json pour enregistrer les infos concernant le fichier
+
+                print(f"Fichier bien enregistré par {file.proprio}")
+                print(f"Nom du fichier  : {fichier}")                                                                  # le nouveau fichier crée
+                print(f"Accéder au fichier {fichier_choisie}.json pour plus de détails.")
+                break
+         #########################################################################################
             break
 
-        elif opt_choisie == 'b':
-            print('b')
-            break
         elif opt_choisie == 'c':
             print('Bientôt ...')
             break
