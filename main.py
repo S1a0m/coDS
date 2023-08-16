@@ -2,7 +2,8 @@ from getpass import getpass
 import re
 import hashlib
 import json
-import pathlib
+import datetime
+from pathlib import Path
 import shutil
 
 print("""
@@ -56,7 +57,6 @@ class Fichier_coDS:
 
     def info_fichier(self):
         return {'Propriétaire du fichier' : {self.proprio},
-                'Enregistré le ' : {date},
                 'Nom du fichier' : {self.name_fichier},
                 'Type du fichier' : {self.type_fichier},
                 'Clé d\'accès' : {self._key}}
@@ -69,11 +69,10 @@ class Fichier_coDS:
 
 
 fichier_choisie = input("[coDS] >> ")                                   #nom du fichier entrant
-flag = True                                                            # pour continuer dans la boucle
+fichier_existe = Path(fichier_choisie).exists()
+while True:
 
-while flag:
-
-    try:
+    if fichier_existe:
         # Conversion du chemin conforme
         print("\t$$$ AU MENU : Appuyer\n"
               "\t$$$ a : pour crypter\n"
@@ -96,17 +95,48 @@ while flag:
 
                 file = Fichier_coDS(proprio, fichier_choisie, key, type_fichier="décrypté")                            # création de l'objet à crypter
                 fichier = file.crypter()
+                heure_crypte = datetime.datetime.now()
+                info_fichier = file.info_fichier()                                                          # infos concernant le fichier suite au cryptage
+                info_fichier['Crypté le'] = heure_crypte                                                   # ajout de la date de création du fichier au dictionnaire
                 with open(f"{fichier_choisie}.json", 'w') as f:
-                    f.write('ATTENTION le fichier que vous lisez est strictement requis.'
-                            'Il vous aidera à décripter votre fichier si besoin y est.'
-                            'Il ne doit donc être en aucun cas supprimé!\n')
-                    json.dump(file.info_fichier(), f, indent=2)                                                       # creation du fichier json pour enregistrer les infos concernant le fichier
+                    json.dump(info_fichier, f, indent=2)                                                       # creation du fichier json pour enregistrer les infos concernant le fichier
 
-                print(f"Fichier bien enregistré par {file.proprio}")
+                with open("README.txt", 'w') as f:
+                    f.write('ATTENTION le fichier json créé suite au cryptage est strictement requis.'
+                            'Il vous aidera à décripter votre fichier si besoin y est.'
+                            'Et ne doit donc être en aucun cas supprimé!')
+
+                print(f"Fichier bien crypté par {file.proprio}")
                 print(f"Nom du fichier  : {fichier}")                                                                  # le nouveau fichier crée
-                print(f"Accéder au fichier {fichier_choisie}.json pour plus de détails.")
+                print(f"Accéder aux fichiers README.txt {fichier_choisie}.json pour plus de détails.")
                 break
-         #########################################################################################
+            elif opt_choisie == 'b':
+                print("Entrez la clé de décryptage :")
+                key = input(f"[{proprio}] >> ")                                                         # La clé devrait être normalement crypté Bientôt ...
+                while not re.fullmatch('\d{3}', key):
+                    print("La clé doit être un nombre de trois chiffres!")
+                    key = input(f"[{proprio}] >> ")
+
+                print("Indiquez le nom du fichier json associé :")
+                fichier_json = input("[coDS] >> ")
+                with open(fichier_json) as j:
+                    dict_json = json.load(j)
+
+                while True:
+                    if dict_json['Clé d\'accès'] == key:
+                        fichier = file.decrypter()
+                        print("Vôtre fichier est bien décrypté.")
+                        print(f"Vous pouvez le consulter sous le nom de {fichier}.")
+                        print(f"À bientôt {proprio}")
+                        break
+                    else:
+                        print("La clé entrée est incorrecte. Voulez vous réessayer ? (y/n)")            # si l'utilisateur veut réessayer
+                        essai = input(f"[{proprio}] >> ")
+                        if essai == 'y':
+                            continue
+                        else:
+                            break
+                break
             break
 
         elif opt_choisie == 'c':
@@ -120,9 +150,9 @@ while flag:
             Veuillez reprendre!""")
             continue
 
-    except :
+    else:
         # Le chemin n'existe pas
-        print("Le chemin n'existe pas ou ne suit pas les regles d'un chemin.")
+        print("Le fichier n'existe pas.")
         print("Voulez-vous bien retapper le chemin exact (y/n) ?")
         opt_choisie = input("[coDS] >> ")
 
