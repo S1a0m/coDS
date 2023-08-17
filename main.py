@@ -1,3 +1,9 @@
+##################################################################
+# Le programme que vous lisez n'est pas encore prêt à être lancé #
+# Il nécessite encore des méthodes de cryptage et de décryptage  #
+# Qui ne sont pas encore prêt                                    #
+##################################################################
+
 from getpass import getpass
 import re
 import hashlib
@@ -41,21 +47,29 @@ de le décrypter en précisant le nom du fichier ou le chemin d'accès au fichie
 Le fichier à crypter ou à décrypter ainsi que les fichiers sortants doivent tous être dans le
 répertoire courant d'où est lancé le programme. Merci.
 
-Pour commencer entrez le nom du fichier texte. 
+Pour commencer entrez le nom du fichier texte ou le chemin d'acces au fichier. 
 """)
 
+########Création de la classe en rapport avec le type fichier à crypter ou à décrypter#################"
+
 class Fichier_coDS:
-    def __init__(self, proprio, name_fichier, key, type_fichier):
+
+
+    def __init__(self, proprio = None, name_fichier = None, key = None, type_fichier = None):
         self.proprio = proprio                                         # propriétaire du fichier
         self.name_fichier = name_fichier
         self.type_fichier = type_fichier
         self._key = self._crypt_key(key)                                 # cle du fichier
 
-    def crypter(self, key):
+    def crypter(self, name_fichier, key):
+        "fonction qui reçoit le nom d'un fichier et une clee pour la cryptee"
+        return fichier_crypte
 
-    def decrypter(self, key):
+    def decrypter(self, name_fichier, key):
+        "fonction qui reçoit le nom d'un fichier et une clee pour la decryptee"
+        return fichier_decrypte
 
-    def info_fichier(self):
+    def _info_fichier(self):
         return {'Propriétaire du fichier' : {self.proprio},
                 'Nom du fichier' : {self.name_fichier},
                 'Type du fichier' : {self.type_fichier},
@@ -65,10 +79,10 @@ class Fichier_coDS:
         cle = bytes(key)                                        # conversion de la chaine en byte
         cle_chiffree = hashlib.sha1(cle).hexdigest()
         return cle_chiffree
-    pass
 
 
-fichier_choisie = input("[coDS] >> ")                                   #nom du fichier entrant
+                         ######Main#########
+fichier_choisie = input("[coDS] >> ")                                   #nom du fichier entrant ou chemin d'acces au fichier
 fichier_existe = Path(fichier_choisie).exists()
 while True:
 
@@ -94,21 +108,21 @@ while True:
                     key = input(f"[{proprio}] >> ")
 
                 file = Fichier_coDS(proprio, fichier_choisie, key, type_fichier="décrypté")                            # création de l'objet à crypter
-                fichier = file.crypter()
+                fichier = file.crypter(fichier_choisie, key)
                 heure_crypte = datetime.datetime.now()
-                info_fichier = file.info_fichier()                                                          # infos concernant le fichier suite au cryptage
+                info_fichier = file._info_fichier()                                                         # infos concernant le fichier suite au cryptage
                 info_fichier['Crypté le'] = heure_crypte                                                   # ajout de la date de création du fichier au dictionnaire
                 with open(f"{fichier_choisie}.json", 'w') as f:
                     json.dump(info_fichier, f, indent=2)                                                       # creation du fichier json pour enregistrer les infos concernant le fichier
 
-                with open("README.txt", 'w') as f:
+                with open("README.txt", 'w') as f:                                                          # fichier README pour empêcher la suppression du fichier json
                     f.write('ATTENTION le fichier json créé suite au cryptage est strictement requis.'
                             'Il vous aidera à décripter votre fichier si besoin y est.'
-                            'Et ne doit donc être en aucun cas supprimé!')
+                            'Et ne doit donc en aucun être cas supprimé!')
 
                 print(f"Fichier bien crypté par {file.proprio}")
                 print(f"Nom du fichier  : {fichier}")                                                                  # le nouveau fichier crée
-                print(f"Accéder aux fichiers README.txt {fichier_choisie}.json pour plus de détails.")
+                print(f"Accéder aux fichiers README.txt et {fichier_choisie}.json pour plus de détails.")
                 break
             elif opt_choisie == 'b':
                 print("Entrez la clé de décryptage :")
@@ -123,14 +137,15 @@ while True:
                     dict_json = json.load(j)
 
                 while True:
-                    if dict_json['Clé d\'accès'] == key:
-                        fichier = file.decrypter()
+                    if dict_json['Clé d\'accès'] == key and dict_json['Type du fichier'] == 'crypté':     # vérifier si la clé est correcte et que le type est 'crypté' avant de procéder au décryptage
+                        file = Fichier_coDS(key)
+                        fichier = file.decrypter(fichier_choisie, key)
                         print("Vôtre fichier est bien décrypté.")
                         print(f"Vous pouvez le consulter sous le nom de {fichier}.")
                         print(f"À bientôt {proprio}")
                         break
                     else:
-                        print("La clé entrée est incorrecte. Voulez vous réessayer ? (y/n)")            # si l'utilisateur veut réessayer
+                        print("La clé entrée est incorrecte ou le fichier entré est déjà crypté. Voulez vous réessayer ? (y/n)")            # si l'utilisateur veut réessayer
                         essai = input(f"[{proprio}] >> ")
                         if essai == 'y':
                             continue
@@ -140,14 +155,13 @@ while True:
             break
 
         elif opt_choisie == 'c':
-            print('Bientôt ...')
+            print('Bientôt ...')                   # interface root pour administrer les fichiers entrant et sortant du programme
             break
         elif opt_choisie == 'q':
             print("À bientôt :-)")
             break
         else:
-            print("""Vous n'avez pas saisie une option du menu.
-            Veuillez reprendre!""")
+            print("""Vous n'avez pas saisie une option du menu. Veuillez reprendre!""")
             continue
 
     else:
