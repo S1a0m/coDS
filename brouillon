@@ -1,0 +1,72 @@
+class Fichier_coDS:
+    def __init__(self, proprio, name_fichier, type_fichier, key):
+        self.proprio = proprio                                         # propriétaire du fichier
+        self.name_fichier = name_fichier
+        self.type_fichier = type_fichier
+        self._key = self._crypt_key(key)                                 # cle du fichier
+
+    def crypter(self, key):
+
+    def decrypter(self, key):
+
+    def info_fichier(self):
+        print(f"Fichier enregistré par : {self.proprio}"
+             # f"Le {save}"
+              f"Chemin d'accès au fichier : {self.name_fichier}"
+              f"Type du fichier : {self.type_fichier}")
+    def _crypt_key(self, key):
+        cle = byte(key)                                        # conversion de la chaine en byte
+        cle_chiffree = hashlib.sha1(cle).hexdigest()
+        return cle_chiffree
+
+
+   elif opt_choisie == 'b':
+                print("La cle de décryptage :")
+                key = input(f"[{proprio}] >> ")
+                print("Le nouveau nom au fichier décrypté :")
+                name_fichier = input(f"[{proprio}] >> ")
+                while not re.fullmatch('\d{3}', key):
+                    print("La clé doit être un nombre de trois chiffres!")
+                    key = input(f"[{proprio}] >> ")
+
+                file = Fichier_coDS(proprio, name_fichier, key, type_fichier="décrypté")  # création de l'objet à crypter
+                file.decrypter()
+                with open(name_fichier) as f:
+                    json.dump(file.info_fichier(),
+                              f)  # creation du fichier json pour enregistrer les infos concernant le fichier
+
+                print(f"Fichier bien enregistré le {date} par {file.proprio}")
+                print(f"Type du fichier : {file.type_fichier}\n"
+                      f"Chemin d'acces : {file.name_fichier}")
+                break
+
+
+
+
+
+A = 130
+n = 0
+
+e : Pour commencer une phrase
+s : Séparer deux lettres
+     |4..1| : Pour montrer que c'est un point
+c : Pour commencer un mot : 0x
+	[a, b, f, j, k, l] : Pour la séparation hexadécimale des lettres : 0x
+
+Deux types de nombres {
+	[n, o, q, r, t, u, w, x, y, z] : nombres pour les lettres : normal
+						 : nombres pour les chiffres : h avant chaque déclaration
+}
+
+Ponctuation : [
+			p     : .
+			4psv1 : ;
+			v     : ,
+			4pse1 : !
+                  4psi1 : ?
+                  m     : *
+                  4pss1 : +
+                  4mss1 : -
+                  d     : /
+                  g     : =
+               ]
