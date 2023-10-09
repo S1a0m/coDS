@@ -2,6 +2,37 @@ import hashlib
 import json
 import coDS_variables
 
+from sympy import gcd, divisors, symbols, Eq, solve
+
+
+class Abc_coDS:
+    """ let us suppose
+    this equation :
+    ax + by = c """
+
+    def __init__(self, a):
+        self.a = int(a)
+        self.__b = self.__find_b()
+        self.__c = gcd(self.a, self.__b)
+
+    def __find_b(self):
+        # trouver b
+        divisors_list = divisors(self.a)       # recuperer l'ensemble des diviseurs de a dans une liste
+        i = len(divisors_list) - 2
+        b = divisors_list[i]                     # recuperer l'avant dernier element de la liste
+        return b
+
+    def solutions(self):
+        """ This method find 26 solutions
+        of the equation behind and bring
+        them in a list """
+        # tri et solutions de l'equation
+        x, y = symbols("x y")
+        equation = Eq(self.a * x + self.__b * y, self.__c)
+        solution = solve(equation, (x, y))
+        return solution
+
+
 class Fichier_coDS:
 # ces  variables ci-dessous representent les dictionnaires elementaires
 # du projet coDS
@@ -10,7 +41,7 @@ class Fichier_coDS:
     alpha = coDS_variables.alphabet
     lang = coDS_variables.dictio_lang_numbers
     normal = coDS_variables.dictio_normal_numbers
-    ponct = coDS_variables.ponctuation
+    dot = coDS_variables.ponctuation
     white_caract = coDS_variables.white_caracteres
 
     def __init__(self, name_file, key, json_file=None):
@@ -20,18 +51,20 @@ class Fichier_coDS:
         self.__user_dict = self.__user_coDS_lang()
         self.__key = self.__crypt_key(key)                                 # cle du fichier
 
-    def __crypt_key(self, param_key):
-        key = bytes(param_key)                                        # conversion de la chaine en byte
+    @staticmethod
+    def __crypt_key(key: int) -> str:
+        key = bytes(key)                                        # conversion de la chaine en byte
         key_crypte = hashlib.sha1(key).hexdigest()
         return key_crypte
 
-    def __user_coDS_lang(self, key):
-        "methode de creation du dictionnaire spécifique à l'utilisateur"
+    def __user_coDS_lang(self):
+        """ methode de creation du dictionnaire
+        spécifique à l'utilisateur """
         return final_dict
         pass
 
     def auth_key(self, json_file):
-        "methode pour verifier l'authenticite d'une clee"
+        """ methode pour verifier l'authenticite d'une clee """
       #  f_t = False
         with open(json_file) as f:
             file_info = json.load(f)
@@ -45,23 +78,23 @@ class Fichier_coDS:
         return self.name_file
 
     def type_file(self, json_file=None, t_f=False):
-        "methode pour détecter le type du fichier"
-        if json_file is not None:
+        """ methode pour détecter le type du fichier """
+        if json_file is not None:                       # verifier si le fichier json est accessible
             with open(json_file) as f:
                 file_info = json.load(f)
                 return file_info["type"]
-        else:
-            if t_f == False:
+        else:                                           # si oui determiner le fichier crypte associe
+            if t_f:                                     # la variable t_f(vrai/faux) pour voir s'il est crypte ou non
                 return 'file_decrypted'
             else:
                 return 'file_encrypted'
 
     def crypt_file(self, name_file):
-        "methode pour crypter un fichier"
+        """ methode pour crypter un fichier """
          return file_crypte, file_crypte.json
 
     def decrypt_file(self, name_fichier, key):
-        "methode pour decrypter un fichier"
+        """ methode pour decrypter un fichier """
         return file_decrypte
 
 

@@ -45,7 +45,7 @@ alphabet = [
     ('A', 'a'), ('B', 'b'), ('C', 'c'),
     ('D', 'd'), ('E', 'e'), ('F', 'f'),
     ('G', 'g'), ('H', 'h'), ('I', 'i'),
-    ('J', 'j'), ('K', 'k'), ('L', 'l'),  # Lettres de l'alphabet
+    ('J', 'j'), ('K', 'k'), ('L', 'l'),                                            # Lettres de l'alphabet
     ('M', 'm'), ('N', 'n'), ('O', 'o'),
     ('P', 'p'), ('Q', 'q'), ('R', 'r'),
     ('S', 's'), ('T', 't'), ('U', 'u'),
@@ -54,17 +54,17 @@ alphabet = [
 ]
 
 dictio_lang_numbers = {
-    0: 'n', 1: 'o', 2: 'q', 3: 'r', 4: 't',  # correspondance nombre de l'alphabet --> lettre
+    0: 'n', 1: 'o', 2: 'q', 3: 'r', 4: 't',                                      # correspondance nombre de l'alphabet --> lettre
     5: 'u', 6: 'w', 7: 'x', 8: 'y', 9: 'z'
 }
 
 dictio_normal_numbers = {
-    0: 'hn', 1: 'ho', 2: 'hq', 3: 'hr', 4: 'ht',  # correspondance nombre --> lettre
+    0: 'hn', 1: 'ho', 2: 'hq', 3: 'hr', 4: 'ht',                                 # correspondance nombre --> lettre
     5: 'hu', 6: 'hw', 7: 'hx', 8: 'hy', 9: 'hz'
 }
 
 ponctuation = {
-    '.': 'p', ',': 'v', '*': 'm', '/': 'd', '=': 'g',  # correspondance ponctuation --> convention_ponctuation
+    '.': 'p', ',': 'v', '*': 'm', '/': 'd', '=': 'g',                           # correspondance ponctuation --> convention_ponctuation
     ';': '4psv1', '!': '4pse1', '?': '4psi1', '+': '4pss1',
     '-': '4mss1'
 }

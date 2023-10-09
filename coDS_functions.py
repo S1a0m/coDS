@@ -7,7 +7,7 @@ init()
 
 
 def file_exist():
-    enter_file = input("\nEntrer le nom/chemin d'acces du fichier: ")
+    enter_file = input("\nEntrer le nom/chemin d'acces du fichier $> ")
     file_there = Path(enter_file).exists() and Path(enter_file).is_file()
     return file_there
 
@@ -43,7 +43,7 @@ def main_coDS():
         if file_exist():                                                       # traitement
             print()
             print(coDS_variables.menu)
-            choose_option = input("Choisir une option: ")
+            choose_option = input("Choisir une option $> ")
             while choose_option:
                 if choose_option == 'a':
                     main_crypt()
@@ -57,12 +57,12 @@ def main_coDS():
                     break
                 else:
                     print(Fore.RED + Style.BRIGHT + "/_!_\\" + Style.RESET_ALL,
-                          " Vous devez entrer l'un des options du menu.\nReprenez!")
-                    choose_option = input("Choisir une option: ")
+                          " Vous devez entrer l'une des options du menu.\nReprenez!")
+                    choose_option = input("Choisir une option $> ")
             break
         else:
             warning()                                                             # avertier l'utilisateur si le fichier n'existe pas
-            resume = input("Voulez-vous reprendre? (y/n): ")
+            resume = input("Voulez-vous reprendre? (y/n) $> ")
             if resume == 'y':
                 continue
             else:
