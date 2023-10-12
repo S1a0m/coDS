@@ -5,15 +5,16 @@ import coDS_variables
 from sympy import gcd, divisors, symbols, Eq, solve
 
 
-class Abc_coDS:
+class Abc_co:
     """ let us suppose
     this equation :
     ax + by = c """
 
-    def __init__(self, a):
+    def __init__(self, a, fetish=1):            # there is also fetish attribute to make c != b
         self.a = int(a)
+        self.fetish = int(fetish)
         self.__b = self.__find_b()
-        self.__c = gcd(self.a, self.__b)
+        self.__c = gcd(self.a, self.__b) * self.fetish
 
     def __find_b(self):
         # trouver b
@@ -30,10 +31,11 @@ class Abc_coDS:
         x, y = symbols("x y")
         equation = Eq(self.a * x + self.__b * y, self.__c)
         solution = solve(equation, (x, y))
+        # le tri n'est pas encore effectue
         return solution
 
 
-class Fichier_coDS:
+class File_co:
 # ces  variables ci-dessous representent les dictionnaires elementaires
 # du projet coDS
 
