@@ -2,7 +2,7 @@ from colorama import Fore, Style, init
 
 init()
 
-### variables de presentation##########################################################################"
+# variables de presentation #
 
 welcome = Fore.MAGENTA + Style.BRIGHT + """
  *********BIENVENUE**************************************************************************
